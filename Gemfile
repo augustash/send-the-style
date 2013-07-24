@@ -4,6 +4,7 @@ ruby '2.0.0'
 gem 'sinatra'
 gem 'foreman'
 gem 'unicorn'
+gem 'multi_json'
 gem 'sass'
 gem 'compass'
 
