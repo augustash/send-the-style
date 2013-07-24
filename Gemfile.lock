@@ -14,6 +14,7 @@ GEM
       thor (>= 0.13.6)
     fssm (0.2.10)
     kgio (2.8.0)
+    multi_json (1.7.7)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
@@ -42,6 +43,7 @@ PLATFORMS
 DEPENDENCIES
   compass
   foreman
+  multi_json
   sass
   shotgun
   sinatra
