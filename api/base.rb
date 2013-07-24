@@ -1,4 +1,5 @@
 require "sinatra/base"
+require "sinatra/namespace"
 require "multi_json"
 require "sass"
 require "compass"
@@ -8,6 +9,7 @@ require "lib/sinatra/error_handling"
 module Api
   class Base < ::Sinatra::Base
     register ::Sinatra::ErrorHandling
+    register ::Sinatra::Namespace
 
     # global configuration elements
     configure do
