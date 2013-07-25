@@ -2,8 +2,6 @@ require "sinatra/base"
 require "sinatra/reloader"
 require "sinatra/namespace"
 require "multi_json"
-require "sass"
-require "compass"
 
 require "lib/sinatra/response_helper"
 

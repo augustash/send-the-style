@@ -8,6 +8,7 @@ gem 'unicorn'
 gem 'multi_json'
 gem 'sass'
 gem 'compass'
+gem 'faraday'
 
 group :development, :test do
   gem 'thin'
