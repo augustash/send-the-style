@@ -24,6 +24,11 @@ module Api
       disable :show_exceptions
     end
 
+    # we want to log things
+    configure :production, :development do
+      enable :logging
+    end
+
     # development environment config
     configure :development do
       register Sinatra::Reloader
