@@ -1,4 +1,5 @@
 require "sinatra/base"
+require "sinatra/reloader"
 require "sinatra/namespace"
 require "multi_json"
 require "sass"
@@ -21,6 +22,11 @@ module Api
 
       # disable internal middleware for presenting errors as HTML
       disable :show_exceptions
+    end
+
+    # development environment config
+    configure :development do
+      register Sinatra::Reloader
     end
 
     # run before every request
