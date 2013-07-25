@@ -4,11 +4,11 @@ require "multi_json"
 require "sass"
 require "compass"
 
-require "lib/sinatra/error_handling"
+require "lib/sinatra/response_helper"
 
 module Api
   class Base < ::Sinatra::Base
-    register ::Sinatra::ErrorHandling
+    register ::Sinatra::ResponseHelper
     register ::Sinatra::Namespace
 
     # global configuration elements
@@ -31,10 +31,6 @@ module Api
 
     # global helper methods available to all namespaces
     helpers do
-       # generate JSON from a hash
-      def json(hash)
-        MultiJson.dump(hash, pretty: true)
-      end
     end
   end
 end
