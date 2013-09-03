@@ -30,6 +30,7 @@ module Api
 
       get "/compile/?" do
         style_file = params[:file]
+        http_images_path = params[:http_images_path]
 
         halt_400_bad_request("Invalid SASS file") \
           unless Faraday.head(style_file).status == 200
@@ -37,7 +38,14 @@ module Api
         response = Faraday.get(style_file)
 
         begin
-          css = send(:scss, response.body.chomp, Compass.sass_engine_options.merge({:images_path => "/media/images", :style => :compressed, :quiet => true}))
+          Compass.configuration do |config|
+          # config.project_path     = File.dirname(__FILE__)
+          # config.images_dir      = "sites/default/"
+          # config.http_images_path = "http://static.mysite.com/img/"
+            config.http_images_path = http_images_path
+          end
+
+          css = send(:scss, response.body.chomp, Compass.sass_engine_options.merge!({style: :expanded, line_comments: false}))
         rescue Sass::SyntaxError => e
           halt_400_bad_request e.to_s
         end
@@ -52,7 +60,7 @@ module Api
 end
 
 
-def debug(time, post)
+def debug(post, time=Time.now)
   logfile = "send-the-style.log"
   if not File.exists?(logfile)
     File.new(logfile, "w")
