@@ -58,20 +58,3 @@ module Api
     end
   end
 end
-
-
-def debug(post, time=Time.now)
-  logfile = "send-the-style.log"
-  if not File.exists?(logfile)
-    File.new(logfile, "w")
-  end
-  File.open(logfile, "a" ) do |f|
-    f.puts "==========================="
-    f.puts ""
-    f.puts "#{time}"
-    f.puts ""
-    f.puts "#{post}"
-    f.puts ""
-    f.puts "==========================="
-  end
-end

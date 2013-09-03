@@ -4,10 +4,12 @@ require "sinatra/namespace"
 require "multi_json"
 
 require "lib/sinatra/response_helper"
+require "lib/sinatra/utility_helper"
 
 module Api
   class Base < ::Sinatra::Base
     register ::Sinatra::ResponseHelper
+    register ::Sinatra::UtilitytHelper
     register ::Sinatra::Namespace
 
     # global configuration elements
