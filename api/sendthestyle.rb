@@ -9,14 +9,9 @@ end
 
 module Api
   class SendTheStyle < Base
-    # allowed parameters
-    VALID_PARAMS = %w[output_style relative_assets line_comments \
-      disable_warnings images_dir http_images_path css_dir http_stylesheets_path \
-      javascripts_dir http_javascripts_path fonts_dir http_fonts_path]
-
     # global configuration elements
     configure do
-      Compass.add_project_configuration("config/compass.rb")
+      ::Compass.add_project_configuration("config/compass.rb")
     end
 
     ## handle 404 errors
@@ -61,15 +56,25 @@ module Api
 
         begin
           # set any passed Compass options
-          compass_params = whitelist(params, VALID_PARAMS)
-          Compass.configuration do |config|
+          compass_params = whitelist(params, ::Sinatra::UtilitytHelper::VALID_PARAMS)
+          ::Compass.configuration do |config|
+            config.sass_options ||= {}
             compass_params.each do |key, value|
-              config.send("#{key}=", value)
+              if config.respond_to? key
+                config.send "#{key}=", value
+              else
+                config.sass_options.merge! key.to_sym => value
+              end
             end
           end
 
           # pass the downloaded SASS content to the renderer
-          css = send(:scss, response.body.chomp)
+          runtime_options = {}
+          runtime_options[:style] = compass_params[:output_style].to_sym if compass_params[:output_style]
+          runtime_options[:line_comments] = to_bool(compass_params[:line_comments]) if compass_params[:line_comments]
+          runtime_options[:cache] = to_bool(compass_params[:cache]) if compass_params[:cache]
+
+          css = send(:scss, response.body.chomp, ::Compass.sass_engine_options.merge!(runtime_options))
         rescue Sass::SyntaxError => e
           halt_400_bad_request e.to_s
         end
