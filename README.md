@@ -13,12 +13,12 @@ hosting environment. That means we can't expect [SASS](http://sass-lang.com/),
 ## API
 
 This simple API is built using the most awesome [Sinatra Framework](http://www.sinatrarb.com/). 
-Basically you'll `POST` some options and data to the API and receive generated 
-CSS to be used in your application.
+Basically you'll send some options and data to the API and receive `JSON` containing 
+generated CSS to be used in your application.
 
 ### Authentication
 
-You authenticate to the Send-the-Style API by providing your API key in the 
+You will authenticate to the Send-the-Style API by providing your API key in the 
 request. Your API keys carry magic privileges, so be sure to keep them secret!
 
 Authentication to the API occurs via 
@@ -32,7 +32,7 @@ You must authenticate for all requests.
 Example Request:
 
 ```bash
-$ curl https://send-the-style.heroku.com/v1/ \
+$ curl https://send-the-style.heroku.com/ \
   -u NmM0M2YzYmJhYTBjMTI3YjczMzM4ZTZjZGM5NzUzNTA=:
 ```
 

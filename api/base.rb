@@ -2,8 +2,6 @@ require "sinatra/base"
 require "sinatra/reloader"
 require "sinatra/namespace"
 require "multi_json"
-require "sass"
-require "compass"
 
 require "lib/sinatra/response_helper"
 
@@ -22,6 +20,11 @@ module Api
 
       # disable internal middleware for presenting errors as HTML
       disable :show_exceptions
+    end
+
+    # we want to log things
+    configure :production, :development do
+      enable :logging
     end
 
     # development environment config
