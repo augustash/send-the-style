@@ -4,6 +4,10 @@ module Sinatra
   module UtilitytHelper
 
     module Helpers
+      def whitelist(params, valid)
+        params.reject { |key,_| !valid.include? key }
+      end
+
       def debug(post, time=Time.now)
         logfile = "send-the-style.log"
         if not File.exists?(logfile)

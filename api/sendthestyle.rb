@@ -9,6 +9,11 @@ end
 
 module Api
   class SendTheStyle < Base
+    # allowed parameters
+    VALID_PARAMS = %w[output_style relative_assets line_comments \
+      disable_warnings images_dir http_images_path css_dir http_stylesheets_path \
+      javascripts_dir http_javascripts_path fonts_dir http_fonts_path]
+
     # global configuration elements
     configure do
       Compass.add_project_configuration("config/compass.rb")
@@ -29,8 +34,8 @@ module Api
       end
 
       get "/compile/?" do
+        # attempt to download the remote SASS file for processing
         style_file = params[:file]
-        http_images_path = params[:http_images_path]
 
         halt_400_bad_request("Invalid SASS file") \
           unless Faraday.head(style_file).status == 200
@@ -38,11 +43,12 @@ module Api
         response = Faraday.get(style_file)
 
         begin
+          compass_params = whitelist(params, VALID_PARAMS)
+
           Compass.configuration do |config|
-          # config.project_path     = File.dirname(__FILE__)
-          # config.images_dir      = "sites/default/"
-          # config.http_images_path = "http://static.mysite.com/img/"
-            config.http_images_path = http_images_path
+            compass_params.each do |key, value|
+              config.send("#{key}=", value)
+            end
           end
 
           css = send(:scss, response.body.chomp, Compass.sass_engine_options.merge!({style: :expanded, line_comments: false}))
