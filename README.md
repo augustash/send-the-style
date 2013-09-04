@@ -1,8 +1,8 @@
 # Send the Style
 ---
 
-Send the Style is an API that allows you to send a request with web-accessible 
-SASS/SCSS URIs or files and get a response with the generated CSS.
+Send the Style is an API that allows you to send a request with a web-accessible 
+SASS/SCSS URI and get a response with the generated CSS.
 
 ## The Problem
 
@@ -32,7 +32,7 @@ You must authenticate for all requests.
 Example Request:
 
 ```bash
-$ curl https://send-the-style.heroku.com/ \
+$ curl https://send-the-style.herokuapp.com/ \
   -u NmM0M2YzYmJhYTBjMTI3YjczMzM4ZTZjZGM5NzUzNTA=:
 ```
 
