@@ -11,11 +11,7 @@ module Api
   class SendTheStyle < Base
     # global configuration elements
     configure do
-      Compass.add_project_configuration("config/compass.rb")
-    end
-
-    get "/?" do
-      json({ message: "Welcome to Send-The-Styles!" })
+      ::Compass.add_project_configuration("config/compass.rb")
     end
 
     ## handle 404 errors
@@ -23,55 +19,72 @@ module Api
       halt_404_not_found
     end
 
-    namespace "/api" do
+    ##
+    # Homepage request; generates simple welcome message
+    #
+    # GET /
+    #
+    get "/?" do
+      json({ message: "Welcome to Send-The-Styles!" })
+    end
+
+    ##
+    # Create namespace to group all API methods
+    #
+    namespace "/api", auth_via: :valid_key? do
+
+      ##
+      # Invalid request for API namespace alone
+      #
+      # GET /api(/)
+      #
       get "/?" do
         halt_400_bad_request
       end
 
+      ##
+      # Compile passed SASS into CSS, respecting any passed options
+      #
+      # GET /api/compile?file=FQDN(&option=value)
+      #
       get "/compile/?" do
+        # attempt to download the remote SASS file for processing
         style_file = params[:file]
-        http_images_path = params[:http_images_path]
-
         halt_400_bad_request("Invalid SASS file") \
           unless Faraday.head(style_file).status == 200
-
         response = Faraday.get(style_file)
 
         begin
-          Compass.configuration do |config|
-          # config.project_path     = File.dirname(__FILE__)
-          # config.images_dir      = "sites/default/"
-          # config.http_images_path = "http://static.mysite.com/img/"
-            config.http_images_path = http_images_path
+          # set any passed Compass options
+          compass_params = whitelist(params, ::Sinatra::UtilitytHelper::VALID_PARAMS)
+          ::Compass.configuration do |config|
+            config.sass_options ||= {}
+            compass_params.each do |key, value|
+              if config.respond_to? key
+                config.send "#{key}=", value
+              else
+                config.sass_options.merge! key.to_sym => value
+              end
+            end
           end
 
-          css = send(:scss, response.body.chomp, Compass.sass_engine_options.merge!({style: :expanded, line_comments: false}))
+          # pass the downloaded SASS content to the renderer
+          runtime_options = {}
+          runtime_options[:style] = compass_params[:output_style].to_sym if compass_params[:output_style]
+          runtime_options[:line_comments] = to_bool(compass_params[:line_comments]) if compass_params[:line_comments]
+          runtime_options[:cache] = to_bool(compass_params[:cache]) if compass_params[:cache]
+
+          css = send(:scss, response.body.chomp, ::Compass.sass_engine_options.merge!(runtime_options))
         rescue Sass::SyntaxError => e
           halt_400_bad_request e.to_s
         end
 
+        # return generated CSS
         json({
           code: "compile_success",
           css:  css
         })
       end
     end
-  end
-end
-
-
-def debug(post, time=Time.now)
-  logfile = "send-the-style.log"
-  if not File.exists?(logfile)
-    File.new(logfile, "w")
-  end
-  File.open(logfile, "a" ) do |f|
-    f.puts "==========================="
-    f.puts ""
-    f.puts "#{time}"
-    f.puts ""
-    f.puts "#{post}"
-    f.puts ""
-    f.puts "==========================="
   end
 end

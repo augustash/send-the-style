@@ -4,11 +4,22 @@ require "sinatra/namespace"
 require "multi_json"
 
 require "lib/sinatra/response_helper"
+require "lib/sinatra/utility_helper"
 
 module Api
   class Base < ::Sinatra::Base
     register ::Sinatra::ResponseHelper
+    register ::Sinatra::UtilitytHelper
     register ::Sinatra::Namespace
+
+    # simple authentication
+    register do
+      def auth_via(name)
+        condition do
+          halt_401_unauthorized unless send(name) == true
+        end
+      end
+    end
 
     # global configuration elements
     configure do
@@ -40,6 +51,11 @@ module Api
 
     # global helper methods available to all namespaces
     helpers do
+      # check for valid key in headers
+      def valid_key?
+        @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+        @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [ENV['API_KEY'], ENV['API_PASSWORD']]
+      end
     end
   end
 end
