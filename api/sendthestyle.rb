@@ -31,7 +31,7 @@ module Api
     ##
     # Create namespace to group all API methods
     #
-    namespace "/api" do
+    namespace "/api", auth_via: :valid_key? do
 
       ##
       # Invalid request for API namespace alone
