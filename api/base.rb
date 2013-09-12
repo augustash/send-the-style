@@ -51,10 +51,18 @@ module Api
 
     # global helper methods available to all namespaces
     helpers do
-      # check for valid key in headers
+      # check for valid API key
       def valid_key?
+        # check for valid key in headers
         @auth ||=  Rack::Auth::Basic::Request.new(request.env)
-        @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [ENV['API_KEY'], ENV['API_PASSWORD']]
+        authed = @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [ENV['API_KEY'], ENV['API_PASSWORD']]
+
+        # check secondly for valid key as a parameter
+        if !authed and !request.params['apikey'].nil?
+          authed = request.params['apikey'] == ENV['API_KEY']
+        end
+
+        authed
       end
     end
   end
