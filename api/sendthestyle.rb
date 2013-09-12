@@ -49,6 +49,8 @@ module Api
       #
       get "/compile/?" do
         # attempt to download the remote SASS file for processing
+        halt_400_bad_request("Invalid SASS file") \
+          unless !params[:file].nil?
         style_file = params[:file]
         halt_400_bad_request("Invalid SASS file") \
           unless !params[:file].nil?
