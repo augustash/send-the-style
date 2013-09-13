@@ -34,6 +34,15 @@ module Api
     namespace "/api", auth_via: :valid_key? do
 
       ##
+      # Drop the request completely if not made over SSL
+      #
+      before do
+        if settings.environment == :production and !request.secure?
+          halt
+        end
+      end
+
+      ##
       # Invalid request for API namespace alone
       #
       # GET /api(/)
