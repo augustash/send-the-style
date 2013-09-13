@@ -4,6 +4,12 @@ title: Send-the-Style History
 SEND-THE-STYLE CHANGELOG
 ========================
 
+1.2.0 (09/13/2013)
+-------------------
+
+* Accept auth parameters so protected remote files can
+  be accessed
+
 1.1.0 (09/12/2013)
 -------------------
 
