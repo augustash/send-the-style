@@ -4,6 +4,11 @@ title: Send-the-Style History
 SEND-THE-STYLE CHANGELOG
 ========================
 
+1.2.1 (09/13/2013)
+-------------------
+
+* Drop connections to /api if not over SSL in production
+
 1.2.0 (09/13/2013)
 -------------------
 
