@@ -32,12 +32,39 @@ You must authenticate for all requests.
 Example Request:
 
 ```bash
-$ curl https://send-the-style.herokuapp.com/ \
+$ curl https://send-the-style.herokuapp.com/api/compile?file=http://example.com/test.sass \
   -u NmM0M2YzYmJhYTBjMTI3YjczMzM4ZTZjZGM5NzUzNTA=:
 ```
 
-> **Note:** `curl` uses the `-u` flag to pass basic auth credentials (adding a 
+> **Note:** `curl` uses the `-u` flag to pass HTTP Basic Auth credentials (adding a 
 > colon after your API key will prevent it from asking you for a password.
+
+#### Authentication Parameter
+
+If you cannot or are having trouble sending API credentials via HTTP Basic headers,
+your API key may be sent via the `apikey` parameter.
+
+Example Request:
+
+```bash
+$ curl https://send-the-style.herokuapp.com/api/compile?apikey=NmM0M2YzYmJhYTBjMTI3YjczMzM4ZTZjZGM5NzUzNTA=:
+```
+
+### Protected HTTP URIs
+
+When developing a new site, many times the entire website is protected by HTTP Basic
+Authentication. Under these conditions the Send-the-Style API will not be able to 
+reach the desired SASS file.
+
+Send-the-Style will accept a username and password sent as parameters in the request.
+If sent, the API will attempt to use the credentials HTTP Basic Authentication for 
+the remote file request.
+
+Example Request:
+
+```bash
+$ curl https://send-the-style.herokuapp.com/api/compile?file=http://example.com/secure.sass&auth_user=user&auth_pass=pass
+```
 
 ### HTTP Status Code Summary
 

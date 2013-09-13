@@ -54,9 +54,20 @@ module Api
         style_file = params[:file]
         halt_400_bad_request("Invalid SASS file") \
           unless !params[:file].nil?
+
+        # build request
+        connection = Faraday.new style_file
+        if !params[:auth_user].nil? and !params[:auth_pass].nil?
+          puts "-- PARAMS: #{params}"
+          connection.basic_auth params[:auth_user], params[:auth_pass]
+        end
+
+        # test for existence
         halt_400_bad_request("Invalid SASS file") \
-          unless Faraday.head(style_file).status == 200
-        response = Faraday.get(style_file)
+          unless connection.head(style_file).status == 200
+
+        # fetch file
+        response = connection.get
 
         begin
           # set any passed Compass options
