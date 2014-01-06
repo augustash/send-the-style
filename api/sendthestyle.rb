@@ -58,11 +58,9 @@ module Api
       #
       get "/compile/?" do
         # attempt to download the remote SASS file for processing
-        halt_400_bad_request("Invalid SASS file") \
+        halt_400_bad_request("Missing SASS file") \
           unless !params[:file].nil?
         style_file = params[:file]
-        halt_400_bad_request("Invalid SASS file") \
-          unless !params[:file].nil?
 
         # build request
         connection = Faraday.new style_file
@@ -72,7 +70,7 @@ module Api
         end
 
         # test for existence
-        halt_400_bad_request("Invalid SASS file") \
+        halt_400_bad_request("Unreadable SASS file") \
           unless connection.head(style_file).status == 200
 
         # fetch file
