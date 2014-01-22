@@ -4,6 +4,11 @@ title: Send-the-Style History
 SEND-THE-STYLE CHANGELOG
 ========================
 
+1.2.2 (01/22/2014)
+-------------------
+
+* Disable verification of SSL connections to prevent issues with mismatched names
+
 1.2.1 (09/13/2013)
 -------------------
 

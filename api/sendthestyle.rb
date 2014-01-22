@@ -63,7 +63,7 @@ module Api
         style_file = params[:file]
 
         # build request
-        connection = Faraday.new style_file
+        connection = Faraday.new style_file, :ssl => {:verify => false}
         if !params[:auth_user].nil? and !params[:auth_pass].nil?
           puts "-- PARAMS: #{params}"
           connection.basic_auth params[:auth_user], params[:auth_pass]
